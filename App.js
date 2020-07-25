@@ -1,11 +1,14 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, View, Text, StatusBar} from 'react-native';
+import {StyleSheet, StatusBar} from 'react-native';
+
 import Home from './screens/Home';
+import Chat from './screens/Chat';
+import Register from './screens/Register';
 const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
-      <Home />
+      <Register />
     </>
   );
 };

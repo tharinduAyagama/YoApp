@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "749878394385",
+    "firebase_url": "https://yoapp-e85d1.firebaseio.com",
+    "project_id": "yoapp-e85d1",
+    "storage_bucket": "yoapp-e85d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749878394385:android:8111f0501add0dcf96fbb0",
+        "android_client_info": {
+          "package_name": "com.yoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749878394385-gu13903rtulq6qj36267qia54a6svgk7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmfxFH6-Ek1LONvZDZWAitJcx1bzHagEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749878394385-gu13903rtulq6qj36267qia54a6svgk7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

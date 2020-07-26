@@ -8,6 +8,7 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
+      {/* <Home /> */}
       <Register />
     </>
   );

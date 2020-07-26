@@ -36,14 +36,12 @@ const Register = () => {
     }
   }
 
-  //if (!confirm) {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Header />
         </View>
-
         {confirm ? (
           <View style={styles.content}>
             <View style={styles.inputCotainer}>
@@ -66,6 +64,7 @@ const Register = () => {
               <TextInput
                 placeholder="e.g: Mark"
                 style={commenStyles.input}
+                value={name}
                 onChangeText={(val) => setName(val)}
               />
             </View>
@@ -93,28 +92,6 @@ const Register = () => {
     </TouchableWithoutFeedback>
   );
 };
-// return (
-//   <View style={styles.container}>
-//     <View style={styles.headerContainer}>
-//       <Header />
-//     </View>
-//     <View style={styles.content}>
-//       <View style={styles.inputCotainer}>
-//         <TextInput
-//           keyboardType={'numeric'}
-//           style={commenStyles.input}
-//           placeholder="enter pin"
-//           value={pin}
-//           onChangeText={(val) => setPin(val)}
-//         />
-//       </View>
-//       <View style={styles.buttonConainer}>
-//         <FlatButton title={'Confirm'} onPress={confirmCode} />
-//       </View>
-//     </View>
-//   </View>
-// );
-// };
 
 const styles = StyleSheet.create({
   content: {

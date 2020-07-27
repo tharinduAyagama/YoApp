@@ -9,7 +9,7 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
-      {/* <Home /> */}
+      <Home />
       {/* <Register /> */}
       <AddFriend />
     </>

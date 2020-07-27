@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -19,7 +19,11 @@ const AddFriend = ({myNumber}) => {
   const add = () => {
     firestore()
       .collection('Friends')
-      .add({myNumber: myNumber, friendNumber: mobileNumber, friendName: name});
+      .add({
+        userNumber: '+94714375309',
+        friendNumber: `+94${mobileNumber}`,
+        friendName: name,
+      });
   };
 
   return (

@@ -2,7 +2,9 @@ import {StyleSheet} from 'react-native';
 
 export const commenStyles = StyleSheet.create({
   input: {
-    borderColor: 'black',
+    color: '#222',
+    backgroundColor: '#c6dec6',
+    borderColor: '#8FBC8F',
     borderWidth: 1,
     borderRadius: 5,
     height: 40,
@@ -10,6 +12,7 @@ export const commenStyles = StyleSheet.create({
     padding: 5,
     marginBottom: 10,
     marginTop: 10,
+    paddingStart: 10,
   },
   feildText: {
     marginTop: 10,

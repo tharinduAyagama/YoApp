@@ -4,7 +4,7 @@ import {View, StyleSheet, Text} from 'react-native';
 const Header = () => {
   return (
     <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>YoApp</Text>
+      <Text style={styles.headerText}>YoChat</Text>
     </View>
   );
 };
@@ -15,10 +15,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
     width: '100%',
-    backgroundColor: 'yellow',
+    backgroundColor: '#8FBC8F',
   },
 
   headerText: {
+    fontWeight: 'bold',
+    color: '#2F4F4F',
+    fontFamily: 'Arial',
     textAlign: 'center',
     fontSize: 40,
   },

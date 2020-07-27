@@ -9,9 +9,10 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
-      <Home />
+      <Chat />
+      {/* <Home /> */}
       {/* <Register /> */}
-      <AddFriend />
+      {/* <AddFriend /> */}
     </>
   );
 };

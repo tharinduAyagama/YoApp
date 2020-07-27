@@ -37,6 +37,7 @@ const AddFriend = ({myNumber}) => {
             <Text style={commenStyles.feildText}>Name</Text>
             <TextInput
               placeholder="e.g: Mark"
+              placeholderTextColor="#222"
               style={commenStyles.input}
               value={name}
               onChangeText={(val) => setName(val)}
@@ -81,6 +82,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   staticPart: {
+    color: '#222',
+    zIndex: 1,
     marginLeft: 6,
     marginRight: -30,
   },
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   container: {
-    backgroundColor: 'wheat',
+    backgroundColor: '#2F4F4F',
     flex: 1,
   },
 });

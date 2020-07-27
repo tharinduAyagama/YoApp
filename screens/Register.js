@@ -49,6 +49,7 @@ const Register = () => {
                 keyboardType={'numeric'}
                 style={commenStyles.input}
                 placeholder="enter pin"
+                placeholderTextColor="#222"
                 value={pin}
                 onChangeText={(val) => setPin(val)}
               />
@@ -60,16 +61,25 @@ const Register = () => {
         ) : (
           <View style={styles.content}>
             <View style={styles.inputCotainer}>
-              <Text style={commenStyles.feildText}>Name</Text>
+              <Text
+                style={{
+                  ...commenStyles.feildText,
+                  color: '#8FBC8F',
+                }}>
+                Name
+              </Text>
               <TextInput
                 placeholder="e.g: Mark"
+                placeholderTextColor="#222"
                 style={commenStyles.input}
                 value={name}
                 onChangeText={(val) => setName(val)}
               />
             </View>
             <View style={styles.inputCotainer}>
-              <Text style={commenStyles.feildText}>Mobile Number</Text>
+              <Text style={{...commenStyles.feildText, color: '#8FBC8F'}}>
+                Mobile Number
+              </Text>
               <View style={styles.numberInput}>
                 <Text style={styles.staticPart}>+94</Text>
                 <TextInput
@@ -105,6 +115,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   staticPart: {
+    zIndex: 1,
+    color: '#222',
     marginLeft: 6,
     marginRight: -30,
   },
@@ -119,7 +131,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   container: {
-    backgroundColor: 'wheat',
+    backgroundColor: '#2F4F4F',
     flex: 1,
   },
 });

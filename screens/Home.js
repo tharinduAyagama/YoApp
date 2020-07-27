@@ -8,8 +8,6 @@ const Home = ({myNumber}) => {
   const [friendList, setFriendList] = useState([]);
   const add = () => {};
 
-  const x = ['ddd', 'dsdsf'];
-
   useEffect(() => {
     const subscriber = firestore()
       .collection('Friends')
@@ -33,14 +31,9 @@ const Home = ({myNumber}) => {
         <FlatList
           data={friendList}
           renderItem={({item}) => (
-            <View
-              style={{
-                height: 50,
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text>Friend:{item.friendName}</Text>
+            <View style={styles.friendItem}>
+              <View style={styles.picture}></View>
+              <Text style={styles.friendText}>{item.friendName}</Text>
             </View>
           )}
         />
@@ -49,6 +42,7 @@ const Home = ({myNumber}) => {
         <TouchableOpacity onPress={add}>
           <View style={styles.addContainer}>
             <FontAwesome5
+              color="#8FBC8F"
               name={'plus'}
               size={40}
               style={styles.plusIcon}></FontAwesome5>
@@ -61,7 +55,7 @@ const Home = ({myNumber}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'wheat',
+    backgroundColor: '#2F4F4F',
     flex: 1,
   },
   headerContainer: {
@@ -69,6 +63,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   addContainer: {
+    justifyContent: 'center',
     marginLeft: 'auto',
     marginRight: 25,
     width: 40,
@@ -83,6 +78,29 @@ const styles = StyleSheet.create({
   plusIconContainer: {
     marginBottom: 25,
     marginTop: 'auto',
+  },
+  friendItem: {
+    flexDirection: 'row',
+    padding: 5,
+    height: 80,
+    flex: 1,
+    alignItems: 'center',
+    borderBottomColor: '#8FBC8F',
+    borderBottomWidth: 1,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  friendText: {
+    color: '#111222',
+    fontWeight: 'bold',
+    fontSize: 25,
+  },
+  picture: {
+    marginRight: 15,
+    height: 50,
+    width: 50,
+    backgroundColor: 'white',
+    borderRadius: 100,
   },
 });
 

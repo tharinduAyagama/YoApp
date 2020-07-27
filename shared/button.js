@@ -19,9 +19,10 @@ const styles = StyleSheet.create({
     width: 200,
     alignContent: 'center',
     borderRadius: 8,
-    backgroundColor: 'yellow',
+    backgroundColor: '#8FBC8F',
   },
   text: {
+    color: '#222',
     marginBottom: 'auto',
     marginLeft: 'auto',
     marginRight: 'auto',

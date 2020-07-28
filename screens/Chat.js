@@ -20,8 +20,8 @@ import DeleteMessage from '../shared/deleteMessage';
 const Chat = () => {
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
-  const myNumber = '+94711387163';
   const friendNumber = '+94714375309';
+  const myNumber = '+94711387163';
   const scrollViewRef = useRef();
 
   useEffect(() => {
@@ -44,38 +44,57 @@ const Chat = () => {
   }, []);
 
   const addChat = () => {
+    const timeNow = Date.now();
     firestore().collection('Users').doc(myNumber).collection('Chats').add({
       from: myNumber,
       to: friendNumber,
       msg: myChat,
-      time: Date.now(),
+      time: timeNow,
       delete: 'false',
     });
     firestore().collection('Users').doc(friendNumber).collection('Chats').add({
       from: myNumber,
       to: friendNumber,
       msg: myChat,
-      time: Date.now(),
+      time: timeNow,
       delete: 'false',
     });
     setMyChat('');
   };
 
-  const deleteMessage = (from, id) => {
+  const deleteMessage = (from, id, to, time) => {
     firestore()
       .collection('Users')
       .doc(from)
       .collection('Chats')
       .doc(id)
       .update({delete: 'true'});
+
+    firestore()
+      .collection('Users')
+      .doc(to)
+      .collection('Chats')
+      .where('from', '==', from)
+      .where('time', '==', time)
+      .get()
+      .then((snapshot) => {
+        snapshot.forEach((doc) => {
+          firestore()
+            .collection('Users')
+            .doc(to)
+            .collection('Chats')
+            .doc(doc.id)
+            .update({delete: 'true'});
+        });
+      });
   };
 
-  const aleartPopup = (from, id) => {
+  const aleartPopup = (from, id, to, time) => {
     Alert.alert('msg', 'ndmd', [
       {
         text: 'delete',
         onPress: () => {
-          deleteMessage(from, id);
+          deleteMessage(from, id, to, time);
         },
       },
       {cancelable: false},
@@ -86,7 +105,10 @@ const Chat = () => {
     if (item.delete == 'false') {
       if (item.from == myNumber) {
         return (
-          <TouchableOpacity onLongPress={() => aleartPopup(item.from, item.id)}>
+          <TouchableOpacity
+            onLongPress={() =>
+              aleartPopup(item.from, item.id, item.to, item.time)
+            }>
             <View style={styles.myMsgContainer}>
               <View style={styles.myMsg}>
                 <Text style={styles.myMsgText}>{item.msg}</Text>
@@ -245,7 +267,7 @@ const styles = StyleSheet.create({
   friendsDeleteMessageContainer: {
     marginRight: 190,
     borderTopRightRadius: 10,
-    backgroundColor: 'red',
+    backgroundColor: '#c6dec6',
     margin: 5,
   },
 });

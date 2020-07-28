@@ -9,11 +9,13 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Header from '../shared/Header';
 import {commenStyles} from '../styles/globleStyles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
+import DeleteMessage from '../shared/deleteMessage';
 
 const Chat = () => {
   const [myChat, setMyChat] = useState('');
@@ -32,7 +34,7 @@ const Chat = () => {
         const chats = [];
         if (querySnapshot) {
           querySnapshot.forEach((documentSnapshot) => {
-            chats.push(documentSnapshot.data());
+            chats.push({...documentSnapshot.data(), id: documentSnapshot.id});
           });
           chats.sort((a, b) => a.time - b.time);
           setWholeChat(chats);
@@ -47,14 +49,77 @@ const Chat = () => {
       to: friendNumber,
       msg: myChat,
       time: Date.now(),
+      delete: 'false',
     });
     firestore().collection('Users').doc(friendNumber).collection('Chats').add({
       from: myNumber,
       to: friendNumber,
       msg: myChat,
       time: Date.now(),
+      delete: 'false',
     });
     setMyChat('');
+  };
+
+  const deleteMessage = (from, id) => {
+    firestore()
+      .collection('Users')
+      .doc(from)
+      .collection('Chats')
+      .doc(id)
+      .update({delete: 'true'});
+  };
+
+  const aleartPopup = (from, id) => {
+    Alert.alert('msg', 'ndmd', [
+      {
+        text: 'delete',
+        onPress: () => {
+          deleteMessage(from, id);
+        },
+      },
+      {cancelable: false},
+    ]);
+  };
+
+  const renderChat = (item) => {
+    if (item.delete == 'false') {
+      if (item.from == myNumber) {
+        return (
+          <TouchableOpacity onLongPress={() => aleartPopup(item.from, item.id)}>
+            <View style={styles.myMsgContainer}>
+              <View style={styles.myMsg}>
+                <Text style={styles.myMsgText}>{item.msg}</Text>
+                <Text style={styles.myTime}>{item.time}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        );
+      } else if (item.from == friendNumber) {
+        return (
+          <View style={styles.frindsMsgContainer}>
+            <View style={styles.frindsMsg}>
+              <Text style={styles.friendsMsgText}>{item.msg}</Text>
+              <Text style={styles.friendsTime}>{item.time}</Text>
+            </View>
+          </View>
+        );
+      }
+    } else if (item.delete == 'true') {
+      if (item.from == myNumber) {
+        return (
+          <View style={styles.myDeleteMessageContainer}>
+            <DeleteMessage></DeleteMessage>
+          </View>
+        );
+      } else if (item.from == friendNumber) {
+        return (
+          <View style={styles.friendsDeleteMessageContainer}>
+            <DeleteMessage></DeleteMessage>
+          </View>
+        );
+      }
+    }
   };
 
   return (
@@ -71,23 +136,7 @@ const Chat = () => {
             }>
             <FlatList
               data={wholeChat}
-              renderItem={({item}) =>
-                item.from == myNumber ? (
-                  <View style={styles.myMsgContainer}>
-                    <View style={styles.myMsg}>
-                      <Text style={styles.myMsgText}>{item.msg}</Text>
-                      <Text style={styles.myTime}>{item.time}</Text>
-                    </View>
-                  </View>
-                ) : (
-                  <View style={styles.frindsMsgContainer}>
-                    <View style={styles.frindsMsg}>
-                      <Text style={styles.friendsMsgText}>{item.msg}</Text>
-                      <Text style={styles.friendsTime}>{item.time}</Text>
-                    </View>
-                  </View>
-                )
-              }
+              renderItem={({item}) => renderChat(item)}
             />
           </ScrollView>
         </View>
@@ -186,6 +235,18 @@ const styles = StyleSheet.create({
   friendsTime: {
     color: '#222',
     fontSize: 12,
+  },
+  myDeleteMessageContainer: {
+    marginLeft: 190,
+    borderTopLeftRadius: 10,
+    backgroundColor: '#c6dec6',
+    margin: 5,
+  },
+  friendsDeleteMessageContainer: {
+    marginRight: 190,
+    borderTopRightRadius: 10,
+    backgroundColor: 'red',
+    margin: 5,
   },
 });
 

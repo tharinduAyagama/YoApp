@@ -14,13 +14,16 @@ import {
 import Header from '../shared/Header';
 import {commenStyles} from '../styles/globleStyles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import firestore from '@react-native-firebase/firestore';
 import DeleteMessage from '../shared/deleteMessage';
 import moment from 'moment';
+import EmojiBoard from 'react-native-emoji-board';
 
 const Chat = () => {
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
+  const [show, setShow] = useState(false);
   const myNumber = '+94714375309';
   const friendNumber = '+94711387163';
   const scrollViewRef = useRef();
@@ -186,6 +189,8 @@ const Chat = () => {
     }
   };
 
+  const addImoji = () => {};
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
@@ -215,6 +220,19 @@ const Chat = () => {
               onChangeText={(val) => setMyChat(val)}
             />
           </View>
+          <TouchableOpacity
+            style={styles.imojiContainer}
+            onPress={() => {
+              Keyboard.dismiss();
+              setShow(!show);
+            }}>
+            <View>
+              <FontAwesome5
+                name={'smile'}
+                size={30}
+                color={'#2F4F4F'}></FontAwesome5>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.sendContainer} onPress={addChat}>
             <View>
               <MaterialIcons
@@ -223,6 +241,9 @@ const Chat = () => {
                 color={'#8FBC8F'}></MaterialIcons>
             </View>
           </TouchableOpacity>
+        </View>
+        <View style={{backgroundColor: 'red', padding: 10}}>
+          <EmojiBoard showBoard={show} onClick={addImoji} />
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -252,6 +273,10 @@ const styles = StyleSheet.create({
   sendContainer: {
     justifyContent: 'center',
     marginRight: 10,
+  },
+  imojiContainer: {
+    marginRight: 15,
+    marginLeft: -45,
   },
   myMsg: {
     backgroundColor: '#90EE90',

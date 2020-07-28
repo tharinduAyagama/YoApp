@@ -16,12 +16,13 @@ import {commenStyles} from '../styles/globleStyles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
 import DeleteMessage from '../shared/deleteMessage';
+import moment from 'moment';
 
 const Chat = () => {
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
-  const friendNumber = '+94714375309';
-  const myNumber = '+94711387163';
+  const myNumber = '+94714375309';
+  const friendNumber = '+94711387163';
   const scrollViewRef = useRef();
 
   useEffect(() => {
@@ -44,22 +45,28 @@ const Chat = () => {
   }, []);
 
   const addChat = () => {
-    const timeNow = Date.now();
-    firestore().collection('Users').doc(myNumber).collection('Chats').add({
-      from: myNumber,
-      to: friendNumber,
-      msg: myChat,
-      time: timeNow,
-      delete: 'false',
-    });
-    firestore().collection('Users').doc(friendNumber).collection('Chats').add({
-      from: myNumber,
-      to: friendNumber,
-      msg: myChat,
-      time: timeNow,
-      delete: 'false',
-    });
-    setMyChat('');
+    if (myChat.length > 0) {
+      const timeNow = Date.now();
+      firestore().collection('Users').doc(myNumber).collection('Chats').add({
+        from: myNumber,
+        to: friendNumber,
+        msg: myChat,
+        time: timeNow,
+        delete: 'false',
+      });
+      firestore()
+        .collection('Users')
+        .doc(friendNumber)
+        .collection('Chats')
+        .add({
+          from: myNumber,
+          to: friendNumber,
+          msg: myChat,
+          time: timeNow,
+          delete: 'false',
+        });
+      setMyChat('');
+    }
   };
 
   const deleteMessage = (from, id, to, time) => {
@@ -89,12 +96,40 @@ const Chat = () => {
       });
   };
 
-  const aleartPopup = (from, id, to, time) => {
-    Alert.alert('msg', 'ndmd', [
+  const showInfo = (msg, time) => {
+    Alert.alert(
+      'Message info',
+      `${msg}\n${moment(time).format('HH:mm')}\n${moment(time).format(
+        'DD/MM/YYYY',
+      )}`,
+      [{cancelable: false}],
+    );
+  };
+
+  const aleartMyPopup = (from, id, to, time, msg) => {
+    Alert.alert('yochat', 'ndmd', [
       {
         text: 'delete',
         onPress: () => {
           deleteMessage(from, id, to, time);
+        },
+      },
+      {
+        text: 'info',
+        onPress: () => {
+          showInfo(msg, time);
+        },
+      },
+      {cancelable: false},
+    ]);
+  };
+
+  const aleartFriendPopup = (time, msg) => {
+    Alert.alert('yochat', 'ndmd', [
+      {
+        text: 'info',
+        onPress: () => {
+          showInfo(msg, time);
         },
       },
       {cancelable: false},
@@ -107,24 +142,31 @@ const Chat = () => {
         return (
           <TouchableOpacity
             onLongPress={() =>
-              aleartPopup(item.from, item.id, item.to, item.time)
+              aleartMyPopup(item.from, item.id, item.to, item.time, item.msg)
             }>
             <View style={styles.myMsgContainer}>
               <View style={styles.myMsg}>
                 <Text style={styles.myMsgText}>{item.msg}</Text>
-                <Text style={styles.myTime}>{item.time}</Text>
+                <Text style={styles.myTime}>
+                  {moment(item.time).format('HH:mm')}
+                </Text>
               </View>
             </View>
           </TouchableOpacity>
         );
       } else if (item.from == friendNumber) {
         return (
-          <View style={styles.frindsMsgContainer}>
-            <View style={styles.frindsMsg}>
-              <Text style={styles.friendsMsgText}>{item.msg}</Text>
-              <Text style={styles.friendsTime}>{item.time}</Text>
+          <TouchableOpacity
+            onLongPress={() => aleartFriendPopup(item.time, item.msg)}>
+            <View style={styles.frindsMsgContainer}>
+              <View style={styles.frindsMsg}>
+                <Text style={styles.friendsMsgText}>{item.msg}</Text>
+                <Text style={styles.friendsTime}>
+                  {moment(item.time).format('HH:mm')}
+                </Text>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         );
       }
     } else if (item.delete == 'true') {

@@ -13,7 +13,7 @@ import {commenStyles} from '../styles/globleStyles';
 import FlatButton from '../shared/button';
 import Header from '../shared/Header';
 
-const Register = () => {
+const Register = ({navigation}) => {
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [confirm, setConfirm] = useState(null);
@@ -40,7 +40,7 @@ const Register = () => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Header />
+          <Header title="YoApp" />
         </View>
         {confirm ? (
           <View style={styles.content}>

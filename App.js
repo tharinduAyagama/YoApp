@@ -8,6 +8,7 @@ import Chat from './screens/Chat';
 import Register from './screens/Register';
 import AddFriend from './screens/AddFriend';
 import HomeStack from './routes/HomeStack';
+import LoginStack from './routes/LoginStack';
 
 const App = () => {
   return (
@@ -17,7 +18,8 @@ const App = () => {
       {/* <Home /> */}
       {/* <Register /> */}
       {/* <AddFriend /> */}
-      <HomeStack></HomeStack>
+      {/* <HomeStack></HomeStack> */}
+      <LoginStack></LoginStack>
     </NavigationContainer>
   );
 };

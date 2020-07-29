@@ -11,26 +11,35 @@ import {commenStyles} from '../styles/globleStyles';
 import FlatButton from '../shared/button';
 import Header from '../shared/Header';
 import firestore from '@react-native-firebase/firestore';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const AddFriend = ({navigation, myNumber}) => {
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
 
   const add = () => {
-    firestore()
-      .collection('Friends')
-      .add({
-        userNumber: '+94714375309',
-        friendNumber: `+94${mobileNumber}`,
-        friendName: name,
-      });
+    if (name.length > 3 && mobileNumber.length == 9) {
+      firestore()
+        .collection('Friends')
+        .add({
+          userNumber: '+94714375309',
+          friendNumber: `+94${mobileNumber}`,
+          friendName: name,
+        });
+      navigation.navigate('Home', '+94714375309');
+    }
   };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Header />
+          <View style={styles.backButton}>
+            <AntDesign name={'arrowleft'} size={40} color={'black'}></AntDesign>
+          </View>
+          <View style={styles.stringPart}>
+            <Header title="Add Friend"></Header>
+          </View>
         </View>
         <View style={styles.content}>
           <View style={styles.inputCotainer}>
@@ -74,6 +83,13 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     marginBottom: 'auto',
   },
+  headerContainer: {
+    margin: 10,
+    backgroundColor: 'red',
+    flexDirection: 'row',
+    height: 64,
+    width: '100%',
+  },
   inputCotainer: {
     width: '80%',
   },
@@ -98,6 +114,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#2F4F4F',
     flex: 1,
   },
+  backButton: {backgroundColor: 'yellow'},
+  stringPart: {backgroundColor: 'green', padding: 5},
 });
 
 export default AddFriend;

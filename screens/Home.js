@@ -4,9 +4,8 @@ import Header from '../shared/Header';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import firestore from '@react-native-firebase/firestore';
 
-const Home = ({navigation}) => {
+const Home = ({navigation, myNumber}) => {
   const [friendList, setFriendList] = useState([]);
-  const add = () => {};
 
   useEffect(() => {
     const subscriber = firestore()
@@ -25,21 +24,33 @@ const Home = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Header />
+        <Header title="YoChat" />
       </View>
       <View>
         <FlatList
           data={friendList}
           renderItem={({item}) => (
-            <View style={styles.friendItem}>
-              <View style={styles.picture}></View>
-              <Text style={styles.friendText}>{item.friendName}</Text>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Chat', {
+                  myNumber: item.userNumber,
+                  friendNumber: item.friendNumber,
+                  friendName: item.friendName,
+                });
+              }}>
+              <View style={styles.friendItem}>
+                <View style={styles.picture}></View>
+                <Text style={styles.friendText}>{item.friendName}</Text>
+              </View>
+            </TouchableOpacity>
           )}
         />
       </View>
       <View style={styles.plusIconContainer}>
-        <TouchableOpacity onPress={add}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('AddFriend', myNumber);
+          }}>
           <View style={styles.addContainer}>
             <FontAwesome5
               color="#8FBC8F"

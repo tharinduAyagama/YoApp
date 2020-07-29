@@ -1,10 +1,10 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
-const Header = () => {
+const Header = ({title}) => {
   return (
     <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>YoChat</Text>
+      <Text style={styles.headerText}>{title}</Text>
     </View>
   );
 };

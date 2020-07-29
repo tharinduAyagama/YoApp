@@ -20,13 +20,14 @@ import DeleteMessage from '../shared/deleteMessage';
 import moment from 'moment';
 import EmojiBoard from 'react-native-emoji-board';
 
-const Chat = ({navigation}) => {
+const Chat = ({navigation, route}) => {
+  const {myNumber} = route.params;
+  const {friendNumber} = route.params;
+  const {friendName} = route.params;
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
   const [margin, setMargin] = useState(0);
   const [show, setShow] = useState(false);
-  const myNumber = '+94714375309';
-  const friendNumber = '+94711387163';
   const scrollViewRef = useRef();
 
   useEffect(() => {
@@ -145,7 +146,7 @@ const Chat = ({navigation}) => {
       if (item.from == myNumber) {
         return (
           <TouchableOpacity
-            style={{backgroundColor: 'green', marginLeft: 'auto'}}
+            style={{marginLeft: 'auto'}}
             onLongPress={() =>
               aleartMyPopup(item.from, item.id, item.to, item.time, item.msg)
             }>
@@ -201,11 +202,10 @@ const Chat = ({navigation}) => {
         Keyboard.dismiss();
         setShow(false);
         setMargin(0);
-        console.warn('xxxxxx');
       }}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Header />
+          <Header title={friendName}></Header>
         </View>
         <View style={styles.chatListCotainer}>
           <ScrollView
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    height: 75,
+    height: 64,
     width: '100%',
   },
   inputCotainer: {
@@ -319,13 +319,11 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   myMsgContainer: {
-    backgroundColor: 'red',
     padding: 4,
     marginLeft: 'auto',
   },
   frindsMsgContainer: {
     padding: 4,
-    backgroundColor: 'red',
     marginRight: 'auto',
   },
   friendsMsgText: {

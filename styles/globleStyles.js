@@ -16,5 +16,6 @@ export const commenStyles = StyleSheet.create({
   },
   feildText: {
     marginTop: 10,
+    color: '#8FBC8F',
   },
 });

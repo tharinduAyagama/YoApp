@@ -9,8 +9,8 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
-      <Chat />
-      {/* <Home /> */}
+      {/* <Chat /> */}
+      <Home />
       {/* <Register /> */}
       {/* <AddFriend /> */}
     </>

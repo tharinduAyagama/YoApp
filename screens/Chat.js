@@ -23,6 +23,7 @@ import EmojiBoard from 'react-native-emoji-board';
 const Chat = () => {
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
+  const [margin, setMargin] = useState(0);
   const [show, setShow] = useState(false);
   const myNumber = '+94714375309';
   const friendNumber = '+94711387163';
@@ -144,6 +145,7 @@ const Chat = () => {
       if (item.from == myNumber) {
         return (
           <TouchableOpacity
+            style={{backgroundColor: 'green', marginLeft: 'auto'}}
             onLongPress={() =>
               aleartMyPopup(item.from, item.id, item.to, item.time, item.msg)
             }>
@@ -189,10 +191,18 @@ const Chat = () => {
     }
   };
 
-  const addImoji = () => {};
+  const addImoji = (emoji) => {
+    console.log(emoji);
+  };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+        setShow(false);
+        setMargin(0);
+        console.warn('xxxxxx');
+      }}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Header />
@@ -209,7 +219,7 @@ const Chat = () => {
             />
           </ScrollView>
         </View>
-        <View style={styles.messageCotainer}>
+        <View style={{...styles.messageCotainer, marginBottom: margin}}>
           <View style={styles.inputCotainer}>
             <TextInput
               multiline={true}
@@ -224,7 +234,8 @@ const Chat = () => {
             style={styles.imojiContainer}
             onPress={() => {
               Keyboard.dismiss();
-              setShow(!show);
+              setShow(true);
+              setMargin(280);
             }}>
             <View>
               <FontAwesome5
@@ -242,8 +253,16 @@ const Chat = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{backgroundColor: 'red', padding: 10}}>
-          <EmojiBoard showBoard={show} onClick={addImoji} />
+        <View style={{backgroundColor: 'red'}}>
+          <EmojiBoard
+            categoryHighlightColor="#2F4F4F"
+            categoryDefautColor="#2F4F4F"
+            showBoard={show}
+            onClick={addImoji}
+            onRemove={() => {
+              setShow('false');
+            }}
+          />
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -300,12 +319,14 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   myMsgContainer: {
+    backgroundColor: 'red',
     padding: 4,
-    paddingLeft: 80,
+    marginLeft: 'auto',
   },
   frindsMsgContainer: {
     padding: 4,
-    paddingRight: 80,
+    backgroundColor: 'red',
+    marginRight: 'auto',
   },
   friendsMsgText: {
     color: '#222',

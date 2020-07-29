@@ -20,7 +20,7 @@ import DeleteMessage from '../shared/deleteMessage';
 import moment from 'moment';
 import EmojiBoard from 'react-native-emoji-board';
 
-const Chat = () => {
+const Chat = ({navigation}) => {
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
   const [margin, setMargin] = useState(0);

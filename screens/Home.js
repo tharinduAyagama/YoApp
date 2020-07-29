@@ -4,7 +4,7 @@ import Header from '../shared/Header';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import firestore from '@react-native-firebase/firestore';
 
-const Home = ({myNumber}) => {
+const Home = ({navigation}) => {
   const [friendList, setFriendList] = useState([]);
   const add = () => {};
 

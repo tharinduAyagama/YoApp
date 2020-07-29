@@ -12,7 +12,7 @@ import FlatButton from '../shared/button';
 import Header from '../shared/Header';
 import firestore from '@react-native-firebase/firestore';
 
-const AddFriend = ({myNumber}) => {
+const AddFriend = ({navigation, myNumber}) => {
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
 

@@ -7,14 +7,17 @@ import Home from './screens/Home';
 import Chat from './screens/Chat';
 import Register from './screens/Register';
 import AddFriend from './screens/AddFriend';
+import HomeStack from './routes/HomeStack';
+
 const App = () => {
   return (
     <NavigationContainer>
       <StatusBar barStyle="light-content" />
       {/* <Chat /> */}
-      <Home />
+      {/* <Home /> */}
       {/* <Register /> */}
       {/* <AddFriend /> */}
+      <HomeStack></HomeStack>
     </NavigationContainer>
   );
 };

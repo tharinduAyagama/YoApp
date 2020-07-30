@@ -9,6 +9,7 @@ import Register from './screens/Register';
 import AddFriend from './screens/AddFriend';
 import HomeStack from './routes/HomeStack';
 import LoginStack from './routes/LoginStack';
+import HomeDrawer from './routes/HomeDrawer';
 
 const App = () => {
   return (
@@ -19,7 +20,8 @@ const App = () => {
       {/* <Register /> */}
       {/* <AddFriend /> */}
       {/* <HomeStack></HomeStack> */}
-      <LoginStack></LoginStack>
+      {/* <LoginStack></LoginStack> */}
+      <HomeDrawer></HomeDrawer>
     </NavigationContainer>
   );
 };

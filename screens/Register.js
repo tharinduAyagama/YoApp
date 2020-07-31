@@ -19,10 +19,28 @@ const Register = ({navigation}) => {
   const [confirm, setConfirm] = useState(null);
   const [pin, setPin] = useState('');
 
+  React.useEffect(() => {
+    auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log(user.phoneNumber);
+        navigation.navigate('HomeStack', {
+          screen: 'Home',
+          params: {myNumber: user.phoneNumber},
+        });
+      } else {
+        console.log('no user');
+        setConfirm(null);
+        navigation.navigate('LoginStack', {
+          screen: 'Register',
+        });
+      }
+    });
+  }, []);
+
   async function Login() {
-    const mobileDB = '+94' + mobileNumber;
-    //firestore().collection('Users').add({name: name, mobile: mobileDB});
-    const confirmation = await auth().signInWithPhoneNumber(mobileDB);
+    const confirmation = await auth().signInWithPhoneNumber(
+      '+94' + mobileNumber,
+    );
     setConfirm(confirmation);
   }
 
@@ -30,9 +48,33 @@ const Register = ({navigation}) => {
     try {
       const x = await confirm.confirm(pin);
       console.warn(x.user.phoneNumber);
+      firestore()
+        .collection('Users')
+        .doc('+94' + mobileNumber)
+        .get()
+        .then((res) => {
+          if (res.data() == undefined) {
+            console.log('no user record found');
+            firestore()
+              .collection('Users')
+              .doc('+94' + mobileNumber)
+              .set({name: name, mobileNumber: '+94' + mobileNumber});
+            navigation.navigate('HomeStack', {
+              screen: 'Home',
+              params: {myNumber: '+94' + mobileNumber, myName: name},
+            });
+          } else {
+            console.log('Already has user');
+            navigation.navigate('HomeStack', {
+              screen: 'Home',
+              params: {myNumber: '+94' + mobileNumber, myName: name},
+            });
+          }
+        });
+      console.log(user);
     } catch (error) {
       console.log('Invalid code.');
-      console.warn(error.code);
+      console.warn(error);
     }
   }
 
@@ -54,6 +96,7 @@ const Register = ({navigation}) => {
                 onChangeText={(val) => setPin(val)}
               />
             </View>
+
             <View style={styles.buttonConainer}>
               <FlatButton title={'Confirm'} onPress={confirmCode} />
             </View>
@@ -61,17 +104,13 @@ const Register = ({navigation}) => {
         ) : (
           <View style={styles.content}>
             <View style={styles.inputCotainer}>
-              <Text
-                style={{
-                  ...commenStyles.feildText,
-                  color: '#8FBC8F',
-                }}>
+              <Text style={{...commenStyles.feildText, color: '#8FBC8F'}}>
                 Name
               </Text>
               <TextInput
-                placeholder="e.g: Mark"
-                placeholderTextColor="#222"
                 style={commenStyles.input}
+                placeholder="e.g. Mark"
+                placeholderTextColor="#222"
                 value={name}
                 onChangeText={(val) => setName(val)}
               />

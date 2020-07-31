@@ -1,25 +1,92 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Alert,
+} from 'react-native';
 import Header from '../shared/Header';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import firestore from '@react-native-firebase/firestore';
 
-const Home = ({navigation, myNumber}) => {
+const Home = ({navigation, route}) => {
+  const {myNumber} = route.params;
   const [friendList, setFriendList] = useState([]);
+
+  let myName = '';
+
+  firestore()
+    .collection('Users')
+    .doc(myNumber)
+    .get()
+    .then((res) => {
+      myName = res.data().name;
+      console.log(myName);
+    });
 
   useEffect(() => {
     const subscriber = firestore()
+      .collection('Users')
+      .doc(myNumber)
       .collection('Friends')
-      .where('userNumber', '==', '+94714375309')
       .onSnapshot((querySnapshot) => {
         const friends = [];
         querySnapshot.forEach((documentSnapshot) => {
-          friends.push(documentSnapshot.data());
+          friends.push({...documentSnapshot.data(), id: documentSnapshot.id});
         });
+        console.log('qqqqqqqqqqqqqqqqqqq');
+        console.log(friends);
         setFriendList(friends);
       });
     return () => subscriber();
   }, []);
+
+  const alertPopup = (id, friendNumber, friendName) => {
+    Alert.alert(friendName, '', [
+      {
+        text: 'info',
+        onPress: () => {
+          showInfo(friendNumber);
+        },
+      },
+      {
+        text: 'delete',
+        onPress: () => {
+          deleteAlert(id);
+        },
+      },
+      {cancelable: false},
+    ]);
+  };
+
+  const deleteAlert = (id) => {
+    Alert.alert(
+      'Delete Warning',
+      'Are u sure that you want to delete this chat?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            deleteChat(id);
+          },
+        },
+        {
+          text: 'No',
+          onPress: () => {},
+        },
+      ],
+    );
+  };
+
+  const deleteChat = (id) => {
+    firestore().collection('Friends').doc(id).delete();
+  };
+
+  const showInfo = (friendNumber) => {
+    Alert.alert('Chat info', friendNumber, [{cancelable: false}]);
+  };
 
   return (
     <View style={styles.container}>
@@ -33,14 +100,18 @@ const Home = ({navigation, myNumber}) => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Chat', {
-                  myNumber: item.userNumber,
-                  friendNumber: item.friendNumber,
-                  friendName: item.friendName,
+                  myNumber: myNumber,
+                  friendNumber: item.mobileNumber,
+                  friendName: item.name,
                 });
-              }}>
+              }}
+              // onLongPress={() => {
+              //   alertPopup(item.id, item.friendNumber, item.friendName);
+              // }}
+            >
               <View style={styles.friendItem}>
                 <View style={styles.picture}></View>
-                <Text style={styles.friendText}>{item.friendName}</Text>
+                <Text style={styles.friendText}>{item.name}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -49,14 +120,17 @@ const Home = ({navigation, myNumber}) => {
       <View style={styles.plusIconContainer}>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('AddFriend', myNumber);
+            navigation.navigate('AddFriend', {
+              myNumber: myNumber,
+              myName: myName,
+            });
           }}>
           <View style={styles.addContainer}>
-            <FontAwesome5
+            <AntDesign
               color="#8FBC8F"
-              name={'plus'}
+              name={'pluscircle'}
               size={40}
-              style={styles.plusIcon}></FontAwesome5>
+              style={styles.plusIcon}></AntDesign>
           </View>
         </TouchableOpacity>
       </View>
@@ -102,8 +176,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
   },
   friendText: {
-    color: '#111222',
-    fontWeight: 'bold',
+    color: '#8FBC8F',
     fontSize: 25,
   },
   picture: {

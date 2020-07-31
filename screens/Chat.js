@@ -15,10 +15,12 @@ import Header from '../shared/Header';
 import {commenStyles} from '../styles/globleStyles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import firestore from '@react-native-firebase/firestore';
 import DeleteMessage from '../shared/deleteMessage';
 import moment from 'moment';
 import EmojiBoard from 'react-native-emoji-board';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const Chat = ({navigation, route}) => {
   const {myNumber} = route.params;
@@ -29,48 +31,68 @@ const Chat = ({navigation, route}) => {
   const [margin, setMargin] = useState(0);
   const [show, setShow] = useState(false);
   const scrollViewRef = useRef();
+  let chatId = '';
 
   useEffect(() => {
-    const subscriber = firestore()
+    console.log(myNumber + friendNumber);
+    firestore()
       .collection('Users')
       .doc(myNumber)
-      .collection('Chats')
-      .where('from', 'in', [myNumber, friendNumber])
-      .onSnapshot((querySnapshot) => {
-        const chats = [];
-        if (querySnapshot) {
-          querySnapshot.forEach((documentSnapshot) => {
-            chats.push({...documentSnapshot.data(), id: documentSnapshot.id});
+      .collection('Friends')
+      .doc(friendNumber)
+      .get()
+      .then((res) => {
+        console.log(res);
+        firestore()
+          .collection('Chats')
+          .doc(res.data().chatId)
+          .collection('Messages')
+          .onSnapshot((querySnapshot) => {
+            const chats = [];
+            if (querySnapshot) {
+              console.log(querySnapshot);
+              querySnapshot.forEach((documentSnapshot) => {
+                console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz');
+                console.log(documentSnapshot.id);
+                chats.push({
+                  ...documentSnapshot.data(),
+                  id: documentSnapshot.id,
+                });
+              });
+              console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx');
+              console.log(chats);
+              setWholeChat(chats);
+            } else {
+              console.log('chat is not started yet');
+            }
           });
-          chats.sort((a, b) => a.time - b.time);
-          setWholeChat(chats);
-        }
       });
-    return () => subscriber();
   }, []);
 
   const addChat = () => {
+    console.log('wwwwwwww');
     if (myChat.length > 0) {
-      const timeNow = Date.now();
-      firestore().collection('Users').doc(myNumber).collection('Chats').add({
-        from: myNumber,
-        to: friendNumber,
-        msg: myChat,
-        time: timeNow,
-        delete: 'false',
-      });
       firestore()
         .collection('Users')
+        .doc(myNumber)
+        .collection('Friends')
         .doc(friendNumber)
-        .collection('Chats')
-        .add({
-          from: myNumber,
-          to: friendNumber,
-          msg: myChat,
-          time: timeNow,
-          delete: 'false',
+        .get()
+        .then((res) => {
+          console.log(res.data().chatId);
+          firestore()
+            .collection('Chats')
+            .doc(res.data().chatId)
+            .collection('Messages')
+            .add({
+              from: myNumber,
+              to: friendNumber,
+              msg: myChat,
+              time: Date.now(),
+              delete: 'false',
+            });
+          setMyChat('');
         });
-      setMyChat('');
     }
   };
 
@@ -205,7 +227,24 @@ const Chat = ({navigation, route}) => {
       }}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Header title={friendName}></Header>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Home');
+            }}>
+            <AntDesign
+              name={'arrowleft'}
+              size={30}
+              color={'#2F4F4F'}
+              style={{marginLeft: 10}}></AntDesign>
+          </TouchableOpacity>
+          <View
+            style={{
+              flex: 1,
+              marginLeft: -40,
+              zIndex: -1,
+            }}>
+            <Header title={friendName}></Header>
+          </View>
         </View>
         <View style={styles.chatListCotainer}>
           <ScrollView
@@ -225,7 +264,7 @@ const Chat = ({navigation, route}) => {
               multiline={true}
               placeholder="Type a message..."
               placeholderTextColor="#222"
-              style={commenStyles.input}
+              style={{...commenStyles.input, borderRadius: 45}}
               value={myChat}
               onChangeText={(val) => setMyChat(val)}
             />
@@ -246,10 +285,14 @@ const Chat = ({navigation, route}) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.sendContainer} onPress={addChat}>
             <View>
-              <MaterialIcons
+              {/* <MaterialIcons
                 name={'send'}
                 size={35}
-                color={'#8FBC8F'}></MaterialIcons>
+                color={'#c6dec6'}></MaterialIcons> */}
+              <MaterialCommunityIcons
+                name={'send-circle'}
+                size={45}
+                color={'#c6dec6'}></MaterialCommunityIcons>
             </View>
           </TouchableOpacity>
         </View>
@@ -275,6 +318,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
+    alignItems: 'center',
+    backgroundColor: '#8FBC8F',
+    flexDirection: 'row',
     height: 64,
     width: '100%',
   },
@@ -301,7 +347,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#90EE90',
     padding: 5,
     marginLeft: 'auto',
-    marginRight: 10,
     marginBottom: 5,
     borderTopLeftRadius: 10,
   },
@@ -309,7 +354,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#7FFFD4',
     padding: 5,
     marginRight: 'auto',
-    marginLeft: 10,
     marginBottom: 5,
     borderTopRightRadius: 10,
   },
@@ -345,16 +389,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   myDeleteMessageContainer: {
-    marginLeft: 190,
+    marginLeft: 'auto',
     borderTopLeftRadius: 10,
     backgroundColor: '#c6dec6',
     margin: 5,
+    marginBottom: 9,
   },
   friendsDeleteMessageContainer: {
-    marginRight: 190,
+    marginRight: 'auto',
     borderTopRightRadius: 10,
     backgroundColor: '#c6dec6',
     margin: 5,
+    marginBottom: 9,
   },
 });
 

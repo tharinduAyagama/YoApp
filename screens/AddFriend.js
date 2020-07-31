@@ -6,6 +6,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TextInput,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {commenStyles} from '../styles/globleStyles';
 import FlatButton from '../shared/button';
@@ -13,20 +15,65 @@ import Header from '../shared/Header';
 import firestore from '@react-native-firebase/firestore';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const AddFriend = ({navigation, myNumber}) => {
-  const [name, setName] = useState('');
+const AddFriend = ({navigation, route}) => {
+  const {myNumber} = route.params;
+  const {myName} = route.params;
   const [mobileNumber, setMobileNumber] = useState('');
+  console.log(myName);
 
   const add = () => {
-    if (name.length > 3 && mobileNumber.length == 9) {
+    if (mobileNumber.length == 9) {
       firestore()
-        .collection('Friends')
-        .add({
-          userNumber: '+94714375309',
-          friendNumber: `+94${mobileNumber}`,
-          friendName: name,
+        .collection('Users')
+        .doc('+94' + mobileNumber)
+        .get()
+        .then((res1) => {
+          if (res1.data() == undefined) {
+            console.log('user not registered in the system');
+            Alert.alert('Oops', 'This number is not registered', [
+              {cancelable: false},
+            ]);
+          } else {
+            console.log('user registered in the system');
+            firestore()
+              .collection('Users')
+              .doc(myNumber)
+              .collection('Friends')
+              .doc('+94' + mobileNumber)
+              .get()
+              .then((res2) => {
+                if (res2.data() == undefined) {
+                  console.log('not in my list');
+                  firestore()
+                    .collection('Users')
+                    .doc(myNumber)
+                    .collection('Friends')
+                    .doc('+94' + mobileNumber)
+                    .set({
+                      name: res1.data().name,
+                      mobileNumber: '+94' + mobileNumber,
+                      chatId: `${myNumber}_${res1.data().mobileNumber}`,
+                    });
+
+                  firestore()
+                    .collection('Users')
+                    .doc('+94' + mobileNumber)
+                    .collection('Friends')
+                    .doc(myNumber)
+                    .set({
+                      name: myName,
+                      mobileNumber: myNumber,
+                      chatId: `${myNumber}_${res1.data().mobileNumber}`,
+                    });
+                } else {
+                  console.log('already in my list');
+                  Alert.alert('', 'This number is already in your chat list', [
+                    {cancelable: false},
+                  ]);
+                }
+              });
+          }
         });
-      navigation.navigate('Home', '+94714375309');
     }
   };
 
@@ -34,24 +81,26 @@ const AddFriend = ({navigation, myNumber}) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <View style={styles.backButton}>
-            <AntDesign name={'arrowleft'} size={40} color={'black'}></AntDesign>
-          </View>
-          <View style={styles.stringPart}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Home');
+            }}>
+            <AntDesign
+              name={'arrowleft'}
+              size={30}
+              color={'#2F4F4F'}
+              style={{marginLeft: 10}}></AntDesign>
+          </TouchableOpacity>
+          <View
+            style={{
+              flex: 1,
+              marginLeft: -40,
+              zIndex: -1,
+            }}>
             <Header title="Add Friend"></Header>
           </View>
         </View>
         <View style={styles.content}>
-          <View style={styles.inputCotainer}>
-            <Text style={commenStyles.feildText}>Name</Text>
-            <TextInput
-              placeholder="e.g: Mark"
-              placeholderTextColor="#222"
-              style={commenStyles.input}
-              value={name}
-              onChangeText={(val) => setName(val)}
-            />
-          </View>
           <View style={styles.inputCotainer}>
             <Text style={commenStyles.feildText}>Mobile Number</Text>
             <View style={styles.numberInput}>
@@ -84,8 +133,8 @@ const styles = StyleSheet.create({
     marginBottom: 'auto',
   },
   headerContainer: {
-    margin: 10,
-    backgroundColor: 'red',
+    alignItems: 'center',
+    backgroundColor: '#8FBC8F',
     flexDirection: 'row',
     height: 64,
     width: '100%',
@@ -106,16 +155,10 @@ const styles = StyleSheet.create({
   buttonConainer: {
     marginTop: 20,
   },
-  headerContainer: {
-    height: 75,
-    width: '100%',
-  },
   container: {
     backgroundColor: '#2F4F4F',
     flex: 1,
   },
-  backButton: {backgroundColor: 'yellow'},
-  stringPart: {backgroundColor: 'green', padding: 5},
 });
 
 export default AddFriend;

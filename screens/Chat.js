@@ -261,49 +261,22 @@ const Chat = ({navigation, route}) => {
               style={{
                 ...commenStyles.input,
                 borderRadius: 45,
-                paddingRight: 40,
+                paddingLeft: 20,
+                paddingRight: 20,
+                textAlignVertical: 'center',
               }}
               value={myChat}
               onChangeText={(val) => setMyChat(val)}
             />
           </View>
-          <TouchableOpacity
-            style={styles.imojiContainer}
-            onPress={() => {
-              Keyboard.dismiss();
-              setShow(true);
-              setMargin(280);
-            }}>
-            <View>
-              <FontAwesome5
-                name={'smile'}
-                size={30}
-                color={'#2F4F4F'}></FontAwesome5>
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.sendContainer} onPress={addChat}>
             <View>
-              {/* <MaterialIcons
-                name={'send'}
-                size={35}
-                color={'#c6dec6'}></MaterialIcons> */}
               <MaterialCommunityIcons
                 name={'send-circle'}
                 size={45}
                 color={'#c6dec6'}></MaterialCommunityIcons>
             </View>
           </TouchableOpacity>
-        </View>
-        <View style={{backgroundColor: 'red'}}>
-          <EmojiBoard
-            categoryHighlightColor="#2F4F4F"
-            categoryDefautColor="#2F4F4F"
-            showBoard={show}
-            onClick={addImoji}
-            onRemove={() => {
-              setShow('false');
-            }}
-          />
         </View>
       </View>
     </TouchableWithoutFeedback>

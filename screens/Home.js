@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import Header from '../shared/Header';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import firestore from '@react-native-firebase/firestore';
 
@@ -113,16 +113,11 @@ const Home = ({navigation, route}) => {
             });
           }}>
           <View style={styles.addContainer}>
-            <FontAwesome
-              color="#8FBC8F"
-              name={'user-plus'}
-              size={40}
-              style={styles.plusIcon}></FontAwesome>
-            {/* <AntDesign
+            <AntDesign
               color="#8FBC8F"
               name={'pluscircle'}
               size={40}
-              style={styles.plusIcon}></AntDesign> */}
+              style={styles.plusIcon}></AntDesign>
           </View>
         </TouchableOpacity>
       </View>

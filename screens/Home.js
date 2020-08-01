@@ -8,7 +8,8 @@ import {
   Alert,
 } from 'react-native';
 import Header from '../shared/Header';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
 import firestore from '@react-native-firebase/firestore';
 
 const Home = ({navigation, route}) => {
@@ -43,55 +44,41 @@ const Home = ({navigation, route}) => {
     return () => subscriber();
   }, []);
 
-  const alertPopup = (id, friendNumber, friendName) => {
+  const alertPopup = (friendMobile, friendName) => {
     Alert.alert(friendName, '', [
       {
         text: 'info',
         onPress: () => {
-          showInfo(friendNumber);
-        },
-      },
-      {
-        text: 'delete',
-        onPress: () => {
-          deleteAlert(id);
+          showInfo(friendMobile);
         },
       },
       {cancelable: false},
     ]);
   };
 
-  const deleteAlert = (id) => {
-    Alert.alert(
-      'Delete Warning',
-      'Are u sure that you want to delete this chat?',
-      [
-        {
-          text: 'Yes',
-          onPress: () => {
-            deleteChat(id);
-          },
-        },
-        {
-          text: 'No',
-          onPress: () => {},
-        },
-      ],
-    );
-  };
-
-  const deleteChat = (id) => {
-    firestore().collection('Friends').doc(id).delete();
-  };
-
-  const showInfo = (friendNumber) => {
-    Alert.alert('Chat info', friendNumber, [{cancelable: false}]);
+  const showInfo = (friendMobile) => {
+    Alert.alert('Chat info', `Number:-  ${friendMobile}`, [
+      {cancelable: false},
+    ]);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Header title="YoChat" />
+        <TouchableOpacity
+          onPress={() => {
+            navigation.toggleDrawer();
+          }}
+          style={{
+            zIndex: 1,
+            marginRight: -40,
+            marginLeft: 8,
+          }}>
+          <Feather color="#2F4F4F" name={'menu'} size={40}></Feather>
+        </TouchableOpacity>
+        <View style={{marginLeft: -8, width: '100%'}}>
+          <Header title="YoChat" />
+        </View>
       </View>
       <View>
         <FlatList
@@ -103,12 +90,12 @@ const Home = ({navigation, route}) => {
                   myNumber: myNumber,
                   friendNumber: item.mobileNumber,
                   friendName: item.name,
+                  chatId: item.chatId,
                 });
               }}
-              // onLongPress={() => {
-              //   alertPopup(item.id, item.friendNumber, item.friendName);
-              // }}
-            >
+              onLongPress={() => {
+                alertPopup(item.mobileNumber, item.name);
+              }}>
               <View style={styles.friendItem}>
                 <View style={styles.picture}></View>
                 <Text style={styles.friendText}>{item.name}</Text>
@@ -126,11 +113,16 @@ const Home = ({navigation, route}) => {
             });
           }}>
           <View style={styles.addContainer}>
-            <AntDesign
+            <FontAwesome
+              color="#8FBC8F"
+              name={'user-plus'}
+              size={40}
+              style={styles.plusIcon}></FontAwesome>
+            {/* <AntDesign
               color="#8FBC8F"
               name={'pluscircle'}
               size={40}
-              style={styles.plusIcon}></AntDesign>
+              style={styles.plusIcon}></AntDesign> */}
           </View>
         </TouchableOpacity>
       </View>
@@ -144,6 +136,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
     height: 75,
     width: '100%',
   },

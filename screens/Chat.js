@@ -26,101 +26,76 @@ const Chat = ({navigation, route}) => {
   const {myNumber} = route.params;
   const {friendNumber} = route.params;
   const {friendName} = route.params;
+  const {chatId} = route.params;
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
   const [margin, setMargin] = useState(0);
   const [show, setShow] = useState(false);
   const scrollViewRef = useRef();
-  let chatId = '';
 
   useEffect(() => {
     console.log(myNumber + friendNumber);
     firestore()
-      .collection('Users')
-      .doc(myNumber)
-      .collection('Friends')
-      .doc(friendNumber)
-      .get()
-      .then((res) => {
-        console.log(res);
-        firestore()
-          .collection('Chats')
-          .doc(res.data().chatId)
-          .collection('Messages')
-          .onSnapshot((querySnapshot) => {
-            const chats = [];
-            if (querySnapshot) {
-              console.log(querySnapshot);
-              querySnapshot.forEach((documentSnapshot) => {
-                console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz');
-                console.log(documentSnapshot.id);
-                chats.push({
-                  ...documentSnapshot.data(),
-                  id: documentSnapshot.id,
-                });
-              });
-              console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx');
-              console.log(chats);
-              setWholeChat(chats);
-            } else {
-              console.log('chat is not started yet');
-            }
+      .collection('Chats')
+      .doc(chatId)
+      .collection('Messages')
+      .onSnapshot((querySnapshot) => {
+        const chats = [];
+        if (querySnapshot) {
+          querySnapshot.forEach((documentSnapshot) => {
+            chats.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
           });
+          chats.sort((a, b) => a.time - b.time);
+          setWholeChat(chats);
+        } else {
+          console.log('chat is not started yet');
+        }
       });
   }, []);
 
   const addChat = () => {
     console.log('wwwwwwww');
     if (myChat.length > 0) {
-      firestore()
-        .collection('Users')
-        .doc(myNumber)
-        .collection('Friends')
-        .doc(friendNumber)
-        .get()
-        .then((res) => {
-          console.log(res.data().chatId);
-          firestore()
-            .collection('Chats')
-            .doc(res.data().chatId)
-            .collection('Messages')
-            .add({
-              from: myNumber,
-              to: friendNumber,
-              msg: myChat,
-              time: Date.now(),
-              delete: 'false',
-            });
-          setMyChat('');
-        });
+      firestore().collection('Chats').doc(chatId).collection('Messages').add({
+        from: myNumber,
+        to: friendNumber,
+        msg: myChat,
+        time: Date.now(),
+        delete: 'false',
+      });
+      setMyChat('');
     }
   };
 
-  const deleteMessage = (from, id, to, time) => {
+  const deleteMessage = (id) => {
     firestore()
-      .collection('Users')
-      .doc(from)
       .collection('Chats')
+      .doc(chatId)
+      .collection('Messages')
       .doc(id)
       .update({delete: 'true'});
+  };
 
-    firestore()
-      .collection('Users')
-      .doc(to)
-      .collection('Chats')
-      .where('from', '==', from)
-      .where('time', '==', time)
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          firestore()
-            .collection('Users')
-            .doc(to)
-            .collection('Chats')
-            .doc(doc.id)
-            .update({delete: 'true'});
-        });
-      });
+  const deleteMessagePopup = (id) => {
+    Alert.alert(
+      'Delete Warning',
+      'Are u sue that you want to delete this message?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            deleteMessage(id);
+          },
+        },
+        {
+          text: 'No',
+          onPress: () => {},
+        },
+      ],
+    );
   };
 
   const showInfo = (msg, time) => {
@@ -134,11 +109,11 @@ const Chat = ({navigation, route}) => {
   };
 
   const aleartMyPopup = (from, id, to, time, msg) => {
-    Alert.alert('yochat', 'ndmd', [
+    Alert.alert('', msg, [
       {
         text: 'delete',
         onPress: () => {
-          deleteMessage(from, id, to, time);
+          deleteMessagePopup(id);
         },
       },
       {
@@ -152,7 +127,7 @@ const Chat = ({navigation, route}) => {
   };
 
   const aleartFriendPopup = (time, msg) => {
-    Alert.alert('yochat', 'ndmd', [
+    Alert.alert('', msg, [
       {
         text: 'info',
         onPress: () => {
@@ -201,13 +176,13 @@ const Chat = ({navigation, route}) => {
       if (item.from == myNumber) {
         return (
           <View style={styles.myDeleteMessageContainer}>
-            <DeleteMessage></DeleteMessage>
+            <DeleteMessage msgContent="You deleted this message"></DeleteMessage>
           </View>
         );
       } else if (item.from == friendNumber) {
         return (
           <View style={styles.friendsDeleteMessageContainer}>
-            <DeleteMessage></DeleteMessage>
+            <DeleteMessage msgContent="This message was deleted"></DeleteMessage>
           </View>
         );
       }
@@ -264,7 +239,11 @@ const Chat = ({navigation, route}) => {
               multiline={true}
               placeholder="Type a message..."
               placeholderTextColor="#222"
-              style={{...commenStyles.input, borderRadius: 45}}
+              style={{
+                ...commenStyles.input,
+                borderRadius: 45,
+                paddingRight: 40,
+              }}
               value={myChat}
               onChangeText={(val) => setMyChat(val)}
             />
@@ -365,10 +344,12 @@ const styles = StyleSheet.create({
   myMsgContainer: {
     padding: 4,
     marginLeft: 'auto',
+    width: '80%',
   },
   frindsMsgContainer: {
     padding: 4,
     marginRight: 'auto',
+    width: '80%',
   },
   friendsMsgText: {
     color: '#222',

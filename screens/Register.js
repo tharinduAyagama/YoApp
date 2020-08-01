@@ -58,7 +58,11 @@ const Register = ({navigation}) => {
             firestore()
               .collection('Users')
               .doc('+94' + mobileNumber)
-              .set({name: name, mobileNumber: '+94' + mobileNumber});
+              .set({
+                name: name,
+                mobileNumber: '+94' + mobileNumber,
+                description: 'Hey there! I am using YoChat',
+              });
             navigation.navigate('HomeStack', {
               screen: 'Home',
               params: {myNumber: '+94' + mobileNumber, myName: name},

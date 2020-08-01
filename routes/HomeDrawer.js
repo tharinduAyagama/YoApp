@@ -13,7 +13,8 @@ const HomeDrawer = ({loggedUser}) => {
   return (
     <Drawer.Navigator
       drawerContent={DrawerScreen}
-      drawerStyle={{backgroundColor: '#2F4F4F', padding: 4}}>
+      drawerStyle={{backgroundColor: '#2F4F4F', padding: 4}}
+      screenOptions={{gestureEnabled: false}}>
       {/* {logged ? (
         <Drawer.Screen name="HomeStack" component={HomeStack}  />
       ) : (

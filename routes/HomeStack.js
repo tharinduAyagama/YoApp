@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Chat from '../screens/Chat';
 import Home from '../screens/Home';
 import AddFriend from '../screens/AddFriend';
+import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,11 @@ const HomeStack = () => {
       <Stack.Screen
         name="Chat"
         component={Chat}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

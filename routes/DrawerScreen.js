@@ -2,18 +2,37 @@ import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Header from '../shared/Header';
 import auth from '@react-native-firebase/auth';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const DrawerScreen = () => (
+const DrawerScreen = ({navigation}) => (
   <View style={styles.container}>
     <View style={styles.headerContainer}>
       <Header title={'YoChat'}></Header>
     </View>
-    <TouchableOpacity style={styles.itemProfile}>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate('HomeStack', {
+          screen: 'Profile',
+        });
+      }}
+      style={styles.itemProfile}>
       <Text style={styles.itemText}>Profile</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.toggleDrawer();
+      }}
+      style={{
+        marginLeft: 'auto',
+        justifyContent: 'center',
+        flex: 1,
+      }}>
+      <Ionicons name={'md-chevron-back'} size={45} color={'#c6dec6'}></Ionicons>
     </TouchableOpacity>
     <TouchableOpacity
       style={styles.itemLogout}
       onPress={() => {
+        navigation.navigate('LoginStack');
         auth().signOut();
       }}>
       <Text style={styles.itemText}>Logout</Text>

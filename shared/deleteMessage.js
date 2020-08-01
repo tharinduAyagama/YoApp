@@ -1,9 +1,9 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 
-const DeleteMessage = () => (
+const DeleteMessage = ({msgContent}) => (
   <View style={styles.textCotainer}>
-    <Text style={styles.deleteMessageText}>You deleted this message</Text>
+    <Text style={styles.deleteMessageText}>{msgContent}</Text>
   </View>
 );
 

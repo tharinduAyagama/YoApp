@@ -29,9 +29,18 @@ const Chat = ({navigation, route}) => {
   const {chatId} = route.params;
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
+  const [desc, setDesc] = useState('hsghgsjh');
   const [margin, setMargin] = useState(0);
   const [show, setShow] = useState(false);
   const scrollViewRef = useRef();
+
+  firestore()
+    .collection('Users')
+    .doc(friendNumber)
+    .get()
+    .then((res) => {
+      setDesc(res.data().desc);
+    });
 
   useEffect(() => {
     console.log(myNumber + friendNumber);
@@ -220,6 +229,16 @@ const Chat = ({navigation, route}) => {
             }}>
             <Header title={friendName}></Header>
           </View>
+        </View>
+        <View
+          style={{
+            width: '100%',
+            height: 20,
+            backgroundColor: '#c6dec6',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text style={{fontSize: 15, color: '#2F4F4F'}}>{desc}</Text>
         </View>
         <View style={styles.chatListCotainer}>
           <ScrollView

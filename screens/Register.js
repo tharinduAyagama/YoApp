@@ -22,13 +22,11 @@ const Register = ({navigation}) => {
   React.useEffect(() => {
     auth().onAuthStateChanged((user) => {
       if (user) {
-        console.log(user.phoneNumber);
         navigation.navigate('HomeStack', {
           screen: 'Home',
           params: {myNumber: user.phoneNumber},
         });
       } else {
-        console.log('no user');
         setConfirm(null);
         navigation.navigate('LoginStack', {
           screen: 'Register',
@@ -47,37 +45,40 @@ const Register = ({navigation}) => {
   async function confirmCode() {
     try {
       const x = await confirm.confirm(pin);
-      console.warn(x.user.phoneNumber);
       firestore()
         .collection('Users')
         .doc('+94' + mobileNumber)
         .get()
         .then((res) => {
           if (res.data() == undefined) {
-            console.log('no user record found');
             firestore()
               .collection('Users')
               .doc('+94' + mobileNumber)
               .set({
                 name: name,
                 mobileNumber: '+94' + mobileNumber,
-                description: 'Hey there! I am using YoChat',
+                desc: 'Hey there! I am using YoChat',
               });
             navigation.navigate('HomeStack', {
               screen: 'Home',
               params: {myNumber: '+94' + mobileNumber, myName: name},
             });
           } else {
-            console.log('Already has user');
+            firestore()
+              .collection('Users')
+              .doc('+94' + mobileNumber)
+              .set({
+                name: name,
+                mobileNumber: '+94' + mobileNumber,
+                desc: 'Hey there! I am using YoChat',
+              });
             navigation.navigate('HomeStack', {
               screen: 'Home',
               params: {myNumber: '+94' + mobileNumber, myName: name},
             });
           }
         });
-      console.log(user);
     } catch (error) {
-      console.log('Invalid code.');
       console.warn(error);
     }
   }
@@ -86,7 +87,7 @@ const Register = ({navigation}) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Header title="YoApp" />
+          <Header title="YoChat" />
         </View>
         {confirm ? (
           <View style={styles.content}>

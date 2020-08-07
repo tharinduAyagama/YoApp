@@ -13,13 +13,10 @@ import {
 } from 'react-native';
 import Header from '../shared/Header';
 import {commenStyles} from '../styles/globleStyles';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import firestore from '@react-native-firebase/firestore';
 import DeleteMessage from '../shared/deleteMessage';
 import moment from 'moment';
-import EmojiBoard from 'react-native-emoji-board';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const Chat = ({navigation, route}) => {
@@ -29,9 +26,8 @@ const Chat = ({navigation, route}) => {
   const {chatId} = route.params;
   const [myChat, setMyChat] = useState('');
   const [wholeChat, setWholeChat] = useState('');
-  const [desc, setDesc] = useState('hsghgsjh');
+  const [desc, setDesc] = useState('');
   const [margin, setMargin] = useState(0);
-  const [show, setShow] = useState(false);
   const scrollViewRef = useRef();
 
   firestore()
@@ -43,7 +39,6 @@ const Chat = ({navigation, route}) => {
     });
 
   useEffect(() => {
-    console.log(myNumber + friendNumber);
     firestore()
       .collection('Chats')
       .doc(chatId)
@@ -66,7 +61,6 @@ const Chat = ({navigation, route}) => {
   }, []);
 
   const addChat = () => {
-    console.log('wwwwwwww');
     if (myChat.length > 0) {
       firestore().collection('Chats').doc(chatId).collection('Messages').add({
         from: myNumber,
@@ -198,15 +192,10 @@ const Chat = ({navigation, route}) => {
     }
   };
 
-  const addImoji = (emoji) => {
-    console.log(emoji);
-  };
-
   return (
     <TouchableWithoutFeedback
       onPress={() => {
         Keyboard.dismiss();
-        setShow(false);
         setMargin(0);
       }}>
       <View style={styles.container}>

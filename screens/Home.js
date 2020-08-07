@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Header from '../shared/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import firestore from '@react-native-firebase/firestore';
 
@@ -24,7 +25,6 @@ const Home = ({navigation, route}) => {
     .get()
     .then((res) => {
       myName = res.data().name;
-      console.log(myName);
     });
 
   useEffect(() => {
@@ -37,8 +37,6 @@ const Home = ({navigation, route}) => {
         querySnapshot.forEach((documentSnapshot) => {
           friends.push({...documentSnapshot.data(), id: documentSnapshot.id});
         });
-        console.log('qqqqqqqqqqqqqqqqqqq');
-        console.log(friends);
         setFriendList(friends);
       });
     return () => subscriber();
@@ -80,6 +78,30 @@ const Home = ({navigation, route}) => {
           <Header title="YoChat" />
         </View>
       </View>
+      <View
+        style={{
+          paddingLeft: '4%',
+          width: '100%',
+          height: 20,
+          backgroundColor: '#c6dec6',
+          justifyContent: 'center',
+        }}>
+        <Text style={{fontSize: 15, color: '#2F4F4F'}}>
+          {'Name: K.M.T.H.B. Ayagama'}
+        </Text>
+      </View>
+      <View
+        style={{
+          paddingLeft: '4%',
+          width: '100%',
+          height: 20,
+          backgroundColor: '#c6dec6',
+          justifyContent: 'center',
+        }}>
+        <Text style={{fontSize: 15, color: '#2F4F4F'}}>
+          {'Index No: 17000084'}
+        </Text>
+      </View>
       <View>
         <FlatList
           data={friendList}
@@ -97,7 +119,13 @@ const Home = ({navigation, route}) => {
                 alertPopup(item.mobileNumber, item.name);
               }}>
               <View style={styles.friendItem}>
-                <View style={styles.picture}></View>
+                <FontAwesome
+                  name={'user'}
+                  size={40}
+                  color={'#8FBC8F'}
+                  style={{
+                    marginRight: 16,
+                  }}></FontAwesome>
                 <Text style={styles.friendText}>{item.name}</Text>
               </View>
             </TouchableOpacity>
@@ -154,6 +182,7 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
   },
   friendItem: {
+    paddingLeft: 16,
     flexDirection: 'row',
     padding: 5,
     height: 80,

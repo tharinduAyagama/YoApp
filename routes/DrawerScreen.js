@@ -3,6 +3,7 @@ import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Header from '../shared/Header';
 import auth from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import RNRestart from 'react-native-restart';
 
 const DrawerScreen = ({navigation}) => (
   <View style={styles.container}>
@@ -34,6 +35,7 @@ const DrawerScreen = ({navigation}) => (
       onPress={() => {
         navigation.navigate('LoginStack');
         auth().signOut();
+        RNRestart.Restart();
       }}>
       <Text style={styles.itemText}>Logout</Text>
     </TouchableOpacity>

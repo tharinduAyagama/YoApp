@@ -19,7 +19,6 @@ const AddFriend = ({navigation, route}) => {
   const {myNumber} = route.params;
   const {myName} = route.params;
   const [mobileNumber, setMobileNumber] = useState('');
-  console.log(myName);
 
   const add = () => {
     if (mobileNumber.length == 9) {
@@ -29,12 +28,10 @@ const AddFriend = ({navigation, route}) => {
         .get()
         .then((res1) => {
           if (res1.data() == undefined) {
-            console.log('user not registered in the system');
             Alert.alert('Oops', 'This number is not registered', [
               {cancelable: false},
             ]);
           } else {
-            console.log('user registered in the system');
             firestore()
               .collection('Users')
               .doc(myNumber)
@@ -65,8 +62,9 @@ const AddFriend = ({navigation, route}) => {
                       mobileNumber: myNumber,
                       chatId: `${myNumber}_${res1.data().mobileNumber}`,
                     });
+                  Alert.alert('', 'Added succesfully', [{cancelable: false}]);
+                  setMobileNumber('');
                 } else {
-                  console.log('already in my list');
                   Alert.alert('', 'This number is already in your chat list', [
                     {cancelable: false},
                   ]);
@@ -74,6 +72,8 @@ const AddFriend = ({navigation, route}) => {
               });
           }
         });
+    } else {
+      Alert.alert('', 'This is not a valid number', [{cancelable: false}]);
     }
   };
 

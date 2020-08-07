@@ -12,6 +12,10 @@ target 'YoApp' do
 
   pod 'react-native-viewpager', :path => '../node_modules/@react-native-community/viewpager'
 
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
+  pod 'react-native-restart', :path => '../node_modules/react-native-restart'
+
   target 'YoAppTests' do
     inherit! :complete
     # Pods for testing

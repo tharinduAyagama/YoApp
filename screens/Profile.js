@@ -1,5 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Modal} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+} from 'react-native';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -10,6 +17,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {TextInput} from 'react-native-gesture-handler';
 import {commenStyles} from '../styles/globleStyles';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const Profile = ({navigation}) => {
   const authUser = auth().currentUser;
@@ -18,6 +26,7 @@ const Profile = ({navigation}) => {
   const [updatingUser, setUpdatingUser] = useState({name: '', desc: ''});
   const [visible, setVisible] = useState(false);
   const [nameEdit, setNameEdit] = useState(null);
+  const scrollViewRef = useRef();
 
   useEffect(() => {
     const subscriber = firestore()
@@ -71,85 +80,92 @@ const Profile = ({navigation}) => {
           <Header title="Profile"></Header>
         </View>
       </View>
-      <View
-        style={{
-          marginTop: 'auto',
-          marginBottom: 'auto',
-          height: 140,
-          width: '35%',
-          backgroundColor: 'white',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          borderRadius: 100,
-        }}></View>
-      <View style={styles.detailContainr}>
-        <View style={styles.nameContainer}>
-          <FontAwesome5
+
+      <ScrollView
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({animated: true})
+        }>
+        <View style={styles.detailContainr}>
+          <FontAwesome
             name={'user'}
-            size={40}
-            color={'#8FBC8F'}
-            style={{}}></FontAwesome5>
-          <View
-            style={{
-              flexDirection: 'column',
-              marginLeft: 20,
-              padding: 8,
-              marginRight: 30,
-            }}>
-            <Text style={{color: '#8FBC8F'}}>{'Name'}</Text>
-            <Text style={styles.nameText}>{user.name}</Text>
-          </View>
-          <MaterialIcons
-            name={'edit'}
-            size={40}
+            size={100}
             color={'#8FBC8F'}
             style={{
+              marginTop: 50,
+              marginBottom: 50,
               marginLeft: 'auto',
               marginRight: 'auto',
-            }}
-            onPress={() => {
-              setNameEdit(true);
-              setVisible(true);
-            }}></MaterialIcons>
-        </View>
-        <View style={styles.numberContainer}>
-          <Ionicons
-            name={'call-outline'}
-            size={40}
-            color={'#8FBC8F'}
-            style={{}}></Ionicons>
-          <View style={{flexDirection: 'column', marginLeft: 20, padding: 8}}>
-            <Text style={{color: '#8FBC8F'}}>{'Number'}</Text>
-            <Text style={styles.numberStyle}>{user.mobileNumber}</Text>
+            }}></FontAwesome>
+          <View style={styles.nameContainer}>
+            <FontAwesome5
+              name={'user'}
+              size={40}
+              color={'#8FBC8F'}
+              style={{}}></FontAwesome5>
+            <View
+              style={{
+                flexDirection: 'column',
+                marginLeft: 20,
+                padding: 8,
+                marginRight: 30,
+              }}>
+              <Text style={{color: '#8FBC8F'}}>{'Name'}</Text>
+              <Text style={styles.nameText}>{user.name}</Text>
+            </View>
+            <MaterialIcons
+              name={'edit'}
+              size={40}
+              color={'#8FBC8F'}
+              style={{
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              }}
+              onPress={() => {
+                setNameEdit(true);
+                setVisible(true);
+              }}></MaterialIcons>
+          </View>
+          <View style={styles.numberContainer}>
+            <Ionicons
+              name={'call-outline'}
+              size={40}
+              color={'#8FBC8F'}
+              style={{}}></Ionicons>
+            <View style={{flexDirection: 'column', marginLeft: 20, padding: 8}}>
+              <Text style={{color: '#8FBC8F'}}>{'Number'}</Text>
+              <Text style={styles.numberStyle}>{user.mobileNumber}</Text>
+            </View>
+          </View>
+          <View style={styles.descriptionContainer}>
+            <MaterialIcons
+              name={'details'}
+              size={40}
+              color={'#8FBC8F'}
+              style={{}}></MaterialIcons>
+            <View
+              style={{
+                flexDirection: 'column',
+                marginLeft: 20,
+                padding: 8,
+                marginRight: 30,
+              }}>
+              <Text style={{color: '#8FBC8F'}}>{'Description'}</Text>
+              <Text style={styles.descStyle}>{user.desc}</Text>
+            </View>
+            <MaterialIcons
+              onPress={() => {
+                setVisible(true);
+                setNameEdit(false);
+              }}
+              name={'edit'}
+              size={40}
+              color={'#8FBC8F'}
+              style={{marginLeft: 'auto', marginRight: 'auto'}}></MaterialIcons>
           </View>
         </View>
-        <View style={styles.descriptionContainer}>
-          <MaterialIcons
-            name={'details'}
-            size={40}
-            color={'#8FBC8F'}
-            style={{}}></MaterialIcons>
-          <View
-            style={{
-              flexDirection: 'column',
-              marginLeft: 20,
-              padding: 8,
-              marginRight: 30,
-            }}>
-            <Text style={{color: '#8FBC8F'}}>{'Description'}</Text>
-            <Text style={styles.descStyle}>{user.desc}</Text>
-          </View>
-          <MaterialIcons
-            onPress={() => {
-              setVisible(true);
-              setNameEdit(false);
-            }}
-            name={'edit'}
-            size={40}
-            color={'#8FBC8F'}
-            style={{marginLeft: 'auto', marginRight: 'auto'}}></MaterialIcons>
-        </View>
-      </View>
+      </ScrollView>
+
       <Modal transparent={true} visible={visible}>
         <View style={{backgroundColor: '#000000aa', flex: 1}}>
           {nameEdit ? (
@@ -257,13 +273,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     marginLeft: 'auto',
+    marginBottom: 16,
     padding: 5,
     width: '75%',
     height: 60,
   },
   numberContainer: {
+    marginBottom: 16,
     marginTop: 'auto',
-    marginBottom: 'auto',
     marginRight: 'auto',
     alignItems: 'center',
     flexDirection: 'row',
@@ -274,6 +291,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   descriptionContainer: {
+    marginBottom: 16,
     marginRight: 'auto',
     alignItems: 'center',
     flexDirection: 'row',
@@ -284,6 +302,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   detailContainr: {
+    flex: 1,
     height: '64%',
     margin: 20,
     marginBottom: 'auto',

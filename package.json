@@ -19,7 +19,7 @@
     "@react-navigation/native": "^5.7.2",
     "@react-navigation/stack": "^5.8.0",
     "formik": "^2.1.5",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.31",
     "react": "16.13.1",
     "react-moment": "^0.9.7",
